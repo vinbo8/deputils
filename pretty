@@ -1,0 +1,6 @@
+#!/bin/bash
+# Author: Vinit Ravishankar
+# Pretty print and timestamp UDPipe output
+
+read in
+echo $in | grep -o ".AS: [0-9\.]*\%" | tr '\n' '\t' | sed "s/^/`date +%b\ %d\ %H:%M:%S`\t/g"
