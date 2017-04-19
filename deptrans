@@ -1,0 +1,52 @@
+#!/usr/bin/python3
+import sys, subprocess, re, urllib3, json, argparse
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p', '--pair', 
+                        help='Language pair, separate by bar (eg. `es|ca`)')
+    parser.add_argument('-s', '--server',
+                        help="Translation server URL",
+                        default="http://localhost:2737/translate") 
+    parser.add_argument('-m', '--mode',
+                        help='add: replace lemma; append: replace form',
+                        default='append')
+
+    args = parser.parse_args()
+
+    out = ""
+    http = urllib3.PoolManager()
+
+    for line in sys.stdin:
+        if line[0] == "#":
+            out += line
+            continue
+
+        if line == "\n":
+            out += "\n"
+            continue
+
+        line = line.rstrip("\n").split("\t")
+        num = line[0]
+        word = line[1]
+        word = re.sub(r'"', r'\\"', word)
+        
+        if word[0].isalnum():
+            r = http.request('POST', args.server, fields={'langpair': args.pair, 'q': word})
+            s = json.loads(r.data.decode('utf-8'))['responseData']['translatedText']
+        else:
+            s = word
+
+        s = re.sub(r'@', '', s)
+        
+        if args.mode == "append":
+            out += "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(num,
+                    s.lstrip("*#").rstrip("#|").lower(), *line[2:])
+        elif args.mode == "add":
+            out += "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(num,
+                    word, s.lstrip("*#").rstrip("#|").lower(), *line[3:])
+        else:
+            sys.stdout.write("Error: invalid mode!\n")
+            break
+
+    sys.stdout.write(out)

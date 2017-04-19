@@ -1,0 +1,3 @@
+#!/bin/bash
+# Author: Vinit Ravishankar
+awk '!NF{i++} END {print i}'
