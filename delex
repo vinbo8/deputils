@@ -7,5 +7,5 @@ for line in sys.stdin:
         continue
 
     cols = line.split("\t")
-    sys.stdout.write("{}\t_\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(cols[0],
-        *cols[2:]))
+    sys.stdout.write("{}\t_\t_\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(cols[0],
+        *cols[3:]))
