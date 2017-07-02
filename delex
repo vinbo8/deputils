@@ -1,0 +1,11 @@
+#!/usr/bin/python3
+import sys
+
+for line in sys.stdin:
+    if line == "\n" or line[0] == "#":
+        sys.stdout.write(line)
+        continue
+
+    cols = line.split("\t")
+    sys.stdout.write("{}\t_\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(cols[0],
+        *cols[2:]))
