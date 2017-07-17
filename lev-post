@@ -1,0 +1,31 @@
+#!/usr/bin/python3
+import sys
+
+# get wordlist from full
+wordlist = []
+with open(sys.argv[1]) as f:
+    for line in f:
+        if line == "\n" or line[0] == "#":
+            continue
+
+        cols = line.split("\t")
+        word = cols[1]
+        if word == '_':
+            continue
+
+        wordlist.append(word)
+
+# fix mini
+template = "{}\t{}\t_\t{}\t{}\t{}\t{}\t{}\t{}\t{}"
+for line in sys.stdin:
+    if line == "\n" or line[0] == "#":
+        sys.stdout.write(line)
+        continue
+
+    cols = line.split("\t")
+    word = cols[1]
+    if word not in wordlist:
+        word = '_'
+
+    sys.stdout.write(template.format(cols[0], word, *cols[3:]))
+

@@ -1,0 +1,51 @@
+#!/usr/bin/python3
+import sys
+import Levenshtein
+
+# tgt -> smaller lang that needs to be parsed
+# src -> bigger lang for info
+tgt_words = []
+with open(sys.argv[1]) as f:
+    for line in f:
+        if line == "\n" or line[0] == "#":
+            continue
+    
+        cols = line.split("\t")
+        try:
+            if cols[3] == 'NOUN':
+                word = cols[1]
+                if len(word) < 5:
+                    continue
+                tgt_words.append(word)
+        except:
+            pass
+
+# all the words from the mini treebank
+tgt_words = set(tgt_words)
+
+# now the big one
+for line in sys.stdin:
+    delex_str = "{}\t_\t_\t{}\t{}\t{}\t{}\t{}\t{}\t{}"
+    if line == "\n" or line[0] == "#":
+        sys.stdout.write(line)
+        continue
+
+    cols = line.split("\t")
+
+    # use lev
+    if cols[3] != 'NOUN':
+        sys.stdout.write(delex_str.format(cols[0], *cols[3:]))
+    else: 
+        src_word = cols[1]
+        s, w= 999, ""        
+        for tgt_word in tgt_words:
+            score = Levenshtein.distance(src_word, tgt_word)
+            if score <= s:
+                s, w = score, tgt_word
+    
+        if s > 5:
+            sys.stdout.write(delex_str.format(cols[0], *cols[3:]))
+            continue
+
+        sys.stdout.write("{}\t{}\t_\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(cols[0],
+            w, *cols[3:])) 
