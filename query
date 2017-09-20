@@ -1,0 +1,19 @@
+#!/usr/bin/python3
+import sys
+from enum import Enum
+
+ID, FORM, LEMMA, UPOS, XPOS, FEATS, HEAD, DEPREL, DEPS, MISC = range(10)
+out = []
+
+for line in sys.stdin:
+    if line == "\n" or line[0] == "#":
+        continue
+
+    cols = line.split("\t")
+    
+    # look for nouns
+    if cols[UPOS] == 'NOUN' and "Number=Sing" in cols[FEATS] and "Case=Dat" in cols[FEATS]:
+        out.append((cols[LEMMA], cols[FORM]))
+
+for i in out:
+    sys.stdout.write("{}\t{}\n".format(i[0], i[1]))
