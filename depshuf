@@ -1,0 +1,17 @@
+#!/usr/bin/python3
+import random, sys
+
+blocks = []
+curr = []
+for line in sys.stdin:
+	curr.append(line)
+	if line == '\n':
+		blocks.append(curr)
+		curr = []
+
+random.shuffle(blocks)
+
+for block in blocks:
+	for line in block:
+		sys.stdout.write(line)
+

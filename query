@@ -11,9 +11,13 @@ for line in sys.stdin:
 
     cols = line.split("\t")
     
-    # look for nouns
-    if cols[UPOS] == 'NOUN' and "Number=Sing" in cols[FEATS] and "Case=Dat" in cols[FEATS]:
+    # BATS stuffs
+    # plurals
+    if cols[UPOS] == 'NOUN' and 'Number=Plur' in cols[FEATS] and 'Case=Nom' in cols[FEATS]:
         out.append((cols[LEMMA], cols[FORM]))
+    # 3msg
+    # out_dict = [(book, {feats: books}), ...]
+    if cols[UPOS] == 'VERB' and 'Number=Plur' in cols[FEATS]
 
 for i in out:
     sys.stdout.write("{}\t{}\n".format(i[0], i[1]))
