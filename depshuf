@@ -9,6 +9,11 @@ for line in sys.stdin:
 		blocks.append(curr)
 		curr = []
 
+try:
+    random.seed(sys.argv[1])
+except IndexError:
+    random.seed(42)
+
 random.shuffle(blocks)
 
 for block in blocks:
