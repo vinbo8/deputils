@@ -1,0 +1,24 @@
+#!/usr/bin/env python
+from conllu import parse_incr
+from argparse import ArgumentParser
+
+parser = ArgumentParser()
+parser.add_argument('--file', '-f', required=True, type=str)
+parser.add_argument('--nsents', '-n', required=True, type=int)
+parser.add_argument('--suffix', '-s', default='')
+parser.add_argument('--prefix', '-p', default='')
+args = parser.parse_args()
+
+current = 0
+counter = 0
+f = open(f"{args.prefix}{current:03d}{args.suffix}", "w")
+for sentence in parse_incr(args.file):
+    if counter == args.nsents:
+        current += 1
+        counter = 0
+        f.close()
+        f = open(f"{args.prefix}{current:03d}{args.suffix}", "w")
+
+    f.write(sentence.serialize())
+    counter += 1
+f.close()
